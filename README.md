@@ -1,54 +1,171 @@
+# Assessment Questions
+
 ## Back-end Questions
-1. Assuming the system currently has three microservices: Customer API, Master Data API, 
-and Transaction Data API, there is a new feature that requires data from all three 
-microservices to be displayed in near real-time. The current technology stack includes 
-REST APIs and an RDBMS database. How would you design a new API for this feature?
 
-        it can be make with 2 approach 
-        First, by using API gateway to parallel call for 3 service
-        by using connection pool or
-   
-        Second, by using event driven (event message) by RabbitMQ
-        to make API subscribe to an event then pre-aggregate the response
-##
-2. Assuming the team has started planning a new project, the project manager asks you for a 
-performance test strategy plan for this release. How would you recommend proceeding to 
-the project manager?
+## 1. **Designing a New API for Real-Time Data Aggregation**
 
-        First of all it need to determine an acceptable response time, goal,
-        critical business logic then make a detailed test plans 
-        for Load Testing,Stress Testing,Endurance Testing then identify
-        bottleneck to make a change for better performance 
-##
-3. Design and develop two APIs using NestJS and Postgres
-      clone this repo and then
+**Scenario**:\
+The system currently consists of three microservices: Customer API, Master Data API, and Transaction Data API. A new feature requires data from all three microservices to be displayed in near real-time. The stack includes REST APIs and an RDBMS database.
 
-       cd ./test
+**Solution Approaches**:
 
-    install package
+1. **API Gateway with Parallel Requests**:
 
-       npm install
+   - Use an API Gateway to make parallel calls to all three services.
+   - Leverage a connection pool to optimize resource utilization and minimize response time.
 
-    create database for local pg name
+2. **Event-Driven Architecture**:
 
-       products_db
+   - Implement a message broker like RabbitMQ.
+   - Use an event-driven approach where APIs subscribe to events and pre-aggregate the responses for near real-time data delivery.
 
-   or if you want to config a database then create .env file in root of test which is locate at /test/test/
+---
 
-       DB_HOST=
-       DB_PORT=
-       DB_USERNAME=
-       DB_PASSWORD=
-       DB_NAME=
+## 2. **Performance Test Strategy Plan**
 
-   then run typeOrm migration
+To ensure optimal performance for the project release, follow these steps:
 
-       npm run migration:run
+1. **Define Goals and Benchmarks**:
 
-   then run a nest server
+   - Establish acceptable response times and performance goals.
+   - Identify critical business logic to focus on.
 
-       npm run start 
-        
-   
+2. **Develop a Detailed Test Plan**:
 
-##
+   - **Load Testing**: Assess system behavior under normal and peak loads.
+   - **Stress Testing**: Identify system limits by testing beyond maximum capacity.
+   - **Endurance Testing**: Evaluate performance over an extended period.
+
+3. **Identify and Resolve Bottlenecks**:
+
+   - Analyze results to pinpoint performance issues.
+   - Optimize system components to enhance performance.
+
+---
+
+## 3. **Developing APIs Using NestJS and PostgreSQL**
+
+### **Steps to Run the Project**
+
+1. Clone the repository and navigate to the project directory:
+
+   ```bash
+   cd ./test
+   ```
+
+2. Install the required packages:
+
+   ```bash
+   npm install
+   ```
+
+3. Create a local PostgreSQL database named `products_db`, or configure a custom database by creating a `.env` file in the project root (`/test/test/`):
+
+   ```env
+   DB_HOST=
+   DB_PORT=
+   DB_USERNAME=
+   DB_PASSWORD=
+   DB_NAME=
+   ```
+
+4. Run TypeORM migrations to set up the database schema:
+
+   ```bash
+   npm run migration:run
+   ```
+
+5. Start the NestJS server:
+
+   ```bash
+   npm run start
+   ```
+
+6. Run tests using Jest:
+
+   ```bash
+   npm run test
+   ```
+
+---
+
+### **Validation**
+
+- **Library Used**: `class-validator`
+- **Implementation**: DTOs are validated using `ValidationPipe`, which is applied globally to handle automatic validation.
+
+---
+
+### **Database Design**
+
+#### **Products Table**
+
+- **Columns**:
+  - `id` (Primary Key)
+  - `created_at` (Timestamp)
+  - `updated_at` (Timestamp)
+
+#### **Product_Translations Table**
+
+- **Columns**:
+  - `id` (Primary Key)
+  - `product_id` (Foreign Key referencing `products.id`)
+  - `language` (Language code, e.g., `en`, `fr`)
+  - `name` (Indexed for full-text search)
+  - `description` (Nullable)
+  - `created_at` (Timestamp)
+  - `updated_at` (Timestamp)
+
+#### **Entity Relationships**
+
+1. **One-to-Many**:
+   - A product has multiple translations (`ProductTranslation`).
+   - Each `ProductTranslation` links back to its parent product.
+2. **Cascade Operations**:
+   - Deleting a product automatically deletes its translations (`CASCADE`).
+   - Changes to translations propagate back to the product entity.
+
+---
+
+### **Testing Strategy**
+
+1. Test controllers and services in isolation.
+2. Validate pagination logic for APIs.
+3. Verify response transformations and data structure.
+4. Ensure full-text search functionality is working as expected.
+
+---
+
+### **Additional Features**
+
+- **API Documentation**:
+  - Swagger is used for API documentation.
+  - Accessible at: [http://localhost:3000/api](http://localhost:3000/api)
+
+## Front-end Questions
+
+## 1. **useCallback usage in React**
+
+        useCallback คือ hooks ที่ใช้ในการป้องกันการ render อัตโนมัติใน React โดยใช้เมื่อเรามี state หรือ props ที่เป็นฟังก์ชันที่ต้องการใช้ใหม่ใน hooks อื่นๆ ในการ render อัตโนมัติ โดยสามารถกำหนดการ re-render ด้วยการกำหนด state ใน array dependencies ([] หมายถึงไม่ re-render)
+
+## 2. **test for react component**
+
+### **Steps to Run the Test**
+
+1. Clone the repository and navigate to the project directory:
+
+   ```bash
+   cd ./react-testing
+   ```
+
+2. Install the required packages:
+
+   ```bash
+   npm install
+   ```
+
+3. Run tests using Jest:
+
+   ```bash
+   npm run test
+   ```
